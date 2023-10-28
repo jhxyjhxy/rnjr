@@ -1,14 +1,27 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
+import SheepWhite from '../assets/sheep_white.svg'
+import SheepBlue from '../assets/sheep_blue.svg'
+import SheepRed from '../assets/sheep_red.svg'
 import '../styles/App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [a, setA] = useState(0);
+  
+  useEffect(() => {
+    setInterval(() => {
+      setA(prev => prev - 1);
+    }, 100);
+  }, []);
 
   return (
     <>
       <div>
+        <img src={SheepWhite} style={{transform: `rotate(${a}deg)`}} />
+        <img src={SheepBlue} style={{transform: `rotate(${a}deg)`}} />
+        <img src={SheepRed} style={{transform: `rotate(${a}deg)`}} />
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
