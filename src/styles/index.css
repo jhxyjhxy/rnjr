@@ -18,6 +18,7 @@ background: radial-gradient(circle, rgba(255,254,231,1) 0%, rgba(235,234,219,1) 
 
   /*** VARS ***/
   --background-color: #6CE062;
+  --game-width: 960px;
 }
 
 a {

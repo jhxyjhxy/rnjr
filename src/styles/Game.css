@@ -2,9 +2,10 @@
 
 .game-screen {
   background-color: var(--background-color);
-  width: 100%;
+  width: 3;
   height: 30rem;
   position: relative;
   box-shadow: 5px 5px 100px rgba(0,0,0,0.3);
   border-radius: 10px;
+  overflow: hidden;
 }

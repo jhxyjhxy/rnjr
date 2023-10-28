@@ -1,20 +1,45 @@
+import { useState, useEffect } from 'react';
 import SheepWhite from '../assets/sheep_white.svg';
 import SheepBlue from '../assets/sheep_blue.svg';
 import SheepRed from '../assets/sheep_red.svg';
-import { Sheep } from '../components/Sheep';
+import { Sheep, SheepProps } from './Sheep';
 import '../styles/Game.css';
 
 export const Game = () => {
-  const sheeps = [
-    { asset: SheepWhite },
-    { asset: SheepBlue },
-    { asset: SheepRed }
-  ]
+  // const vars
+  const GAME_CLOCK_PERIOD = 100; // ms
+
+  const [intervalId, setIntervalId] = useState<number | null>(null); // if null, means game loop already running
+  const [sheeps, setSheeps] = useState<SheepProps[]>([]);
+
+  // set up testing data
+  useEffect(() => {
+    setSheeps([
+      { asset: SheepWhite, progress: 0.5, y: 10},
+      { asset: SheepBlue, progress: 0.2, y: 50},
+      { asset: SheepRed, progress: 0.8, y: 90}
+    ]);
+    startLoop();
+  }, [])
+
+  const stepGame = ():void => {
+    setSheeps(prev => prev.map(sheep => ({...sheep, progress: sheep.progress + 0.001})));
+  };
+
+  const startLoop = (): void => {
+    if (intervalId !== null) return; // loop already running
+    setIntervalId(setInterval(stepGame, GAME_CLOCK_PERIOD));
+  };
+
+  const stopLoop = (): void => {
+    if (intervalId === null) return; // loop already stopped
+    clearInterval(intervalId);
+  }
 
   return (
   <div className="game-screen">
     {sheeps.map((sheep, i) => {
-      return <Sheep key={i} asset={sheep.asset} />
+      return <Sheep key={i} {...sheep} />
     })}
   </div>
   )

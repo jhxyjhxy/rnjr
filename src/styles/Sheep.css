@@ -3,10 +3,12 @@
     transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg);
+    transform: rotate(-360deg);
   }
 }
 
 .sheep {
-  animation: spin infinite 20s linear;
+  position: absolute;
+  animation: spin infinite 5s linear;
+  transition: top 0.1s, left 0.1s;
 }
