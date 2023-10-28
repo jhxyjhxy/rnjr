@@ -18,3 +18,5 @@
 * [stretch] would use convex for database like high scores table and progress
 * level 1: 3 emotions
   * happy (anything joy / amusement), sad, anger
+* level 2: the correct emotion should be top 2
+* level 3: the correct emotion should be in first place
