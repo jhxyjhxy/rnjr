@@ -2,6 +2,12 @@
 
 ## name ideas
 * voicechamp
+* Sheepish
+* MoSheep
+* EmoSheep
+* Emotieep
+* Sheep Whisperer
+* possible subtitle: "The Vocal Herding Adventure"
 
 ## idea: *emotional voice galaga* web app
 * player is the shephard herding sheep
