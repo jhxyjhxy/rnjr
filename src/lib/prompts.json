@@ -1,0 +1,39 @@
+{"angry" : [
+    "I've had enough of this!",
+    "Why is this always happening to me?",
+    "This is completely unacceptable!",
+    "I can't believe you would do this!",
+    "You have no idea how much you've hurt me.",
+    "I'm so sick and tired of your excuses!",
+    "You're making me lose my patience!",
+    "I'm not going to put up with this anymore!",
+    "I'm done with all of this nonsense!",
+    "Just leave me alone!"
+],
+
+"sad" : [
+    "I don't know how to cope with this pain.",
+    "I feel so alone and lost right now.",
+    "I can't seem to find any joy in anything anymore.",
+    "I just want this feeling to go away.",
+    "I feel like I'm constantly drowning in sadness.",
+    "I don't know if things will ever get better.",
+    "I feel like nobody understands what I'm going through.",
+    "I don't have the energy to deal with anything right now.",
+    "I wish I could just disappear for a while.",
+    "I'm struggling to find any reason to keep going."
+],
+
+"happy" : [
+    "I'm so grateful for everything in my life right now.",
+    "I can't stop smiling because things are going so well!",
+    "Today is a fantastic day!",
+    "I feel truly blessed and fortunate.",
+    "I'm surrounded by amazing people who bring me joy.",
+    "I'm loving every moment of this!",
+    "I feel like I'm on top of the world!",
+    "I'm so excited about what the future holds.",
+    "I have so much to look forward to!",
+    "I feel like nothing can bring me down today!"
+]
+}

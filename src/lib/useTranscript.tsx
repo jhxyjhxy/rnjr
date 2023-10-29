@@ -8,7 +8,7 @@ export const useTranscript = () => {
   useEffect(() => {
     const setup = async () => {
       const recognition = new (window as any).webkitSpeechRecognition();
-      recognition.continuous = false; // continuous results vs single result
+      recognition.continuous = true; // continuous results vs single result
       recognition.lang = "en-US";
       recognition.interimResults = false;
       setRecognition(recognition);
