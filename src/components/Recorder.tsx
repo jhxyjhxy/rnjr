@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 
 interface RecorderProps {
-  
+  recording: boolean;
 }
 
 export const Recorder = (props: RecorderProps) => {
+  const {recording} = props;
+
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
 
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
-  const [recording, setRecording] = useState<boolean>(false);
 
   // initialization
   useEffect(() => {
@@ -30,9 +31,17 @@ export const Recorder = (props: RecorderProps) => {
     setup();
   }, []);
 
+  useEffect(() => {
+    console.log('hello?')
+    if (recording)
+      startRecording();
+    else
+      stopRecording();
+    console.log(audioChunks);
+  }, [recording])
+
   const startRecording = () => {
     if (!recorder || !mediaStream) return;
-    if (recording) return;
 
     // setAudioChunks([]);
     recorder.start();
@@ -40,7 +49,6 @@ export const Recorder = (props: RecorderProps) => {
 
   const stopRecording = () => {
     if (!recorder || !mediaStream) return;
-    if (!recording) return;
 
     recorder.stop();
   }
@@ -63,19 +71,20 @@ export const Recorder = (props: RecorderProps) => {
   // }
 
   return (
-    <div
-    style={{backgroundColor: recording ? 'red' : 'gray'}}
-    onClick={() => {
-      console.log(audioChunks);
-      setRecording(wasRecording => {
-        if (wasRecording)
-          stopRecording();
-        else
-          startRecording();
-        return !wasRecording;
-      });
-    }}>
-      {recording ? 'Stop Recording' : 'Record'}
-    </div>
+    <div>asdf</div>
+    // <div
+    // style={{backgroundColor: recording ? 'red' : 'gray'}}
+    // onClick={() => {
+    //   console.log(audioChunks);
+    //   setRecording(wasRecording => {
+    //     if (wasRecording)
+    //       stopRecording();
+    //     else
+    //       startRecording();
+    //     return !wasRecording;
+    //   });
+    // }}>
+    //   {recording ? 'Stop Recording' : 'Record'}
+    // </div>
   )
 }
