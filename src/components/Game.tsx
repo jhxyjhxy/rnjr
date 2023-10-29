@@ -5,7 +5,7 @@ import SheepRed from "../assets/sheep_red.svg";
 import { Sheep, SheepProps } from "./Sheep";
 import "../styles/Game.css";
 import { Recorder } from "./Recorder";
-import Transcription from "./Transcript";
+import { useTranscript } from "../lib/useTranscript";
 
 export const Game = () => {
   // const vars
@@ -14,6 +14,13 @@ export const Game = () => {
   const [intervalId, setIntervalId] = useState<any>(null); // if null, means game loop already running
   const [sheeps, setSheeps] = useState<SheepProps[]>([]);
   const [recording, setRecording] = useState<boolean>(false);
+  const {
+    transcription,
+    startTranscribing,
+    stopTranscribing,
+    resetTranscript,
+  } = useTranscript();
+  // const [recognition, setRecognition] = useState<any>(null);
   // set up testing data
   useEffect(() => {
     setSheeps([
@@ -23,6 +30,10 @@ export const Game = () => {
     ]);
     startLoop();
   }, []);
+
+  useEffect(() => {
+    console.log(transcription);
+  }, [transcription]);
 
   const stepGame = (): void => {
     setSheeps((prev) =>
@@ -40,11 +51,22 @@ export const Game = () => {
     clearInterval(intervalId);
   };
 
+  const startRecording = (): void => {
+    setRecording(true);
+    startTranscribing();
+  };
+
+  const stopRecording = (): void => {
+    setRecording(false);
+    stopTranscribing();
+  };
+
   return (
     <div className="game-screen">
       <div
         onClick={() => {
-          setRecording((prev) => !prev);
+          if (recording) stopRecording();
+          else startRecording();
         }}
         style={{ backgroundColor: recording ? "red" : "gray" }}
       >
@@ -54,7 +76,6 @@ export const Game = () => {
         return <Sheep key={i} {...sheep} />;
       })}
       <Recorder recording={recording} />
-      <Transcription />
     </div>
   );
 };
