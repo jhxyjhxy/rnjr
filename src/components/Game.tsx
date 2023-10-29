@@ -4,7 +4,7 @@ import SheepBlue from '../assets/sheep_blue.svg';
 import SheepRed from '../assets/sheep_red.svg';
 import { Sheep, SheepProps } from './Sheep';
 import '../styles/Game.css';
-import { Recorder } from './Recorder';
+import { useRecorder } from './Recorder';
 import { useTranscript } from '../lib/useTranscript';
 import { useHume } from '../lib/useHume';
 
@@ -15,11 +15,23 @@ export const Game = () => {
   const [intervalId, setIntervalId] = useState<any>(null); // if null, means game loop already running
   const [sheeps, setSheeps] = useState<SheepProps[]>([]);
   const [recording, setRecording] = useState<boolean>(false);
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
-  const [recordingLength, setRecordingLength] = useState(0);
-
-
+  // const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  // const [recordingLength, setRecordingLength] = useState(0);
+  
   const getEmotions = useHume();
+  const onNewAudio = (audioBlob: Blob, recordingStartTime: number) => {
+    const recordingLength = Date.now() - recordingStartTime;
+    console.log('recording length', recordingLength);
+    getEmotions(audioBlob, recordingLength).then(emotions => {
+      console.log(emotions);
+      const sortedEmotions = emotions.prosody.predictions[0].emotions.sort((a, b) => a.score - b.score);
+      console.log(sortedEmotions);
+    }).catch(error => console.log(error));
+  };
+
+  const { audioBlob, startAudioRecording, stopAudioRecording } = useRecorder(onNewAudio);
+
+
 
   // set up testing data
   useEffect(() => {
@@ -74,18 +86,13 @@ export const Game = () => {
   const startRecording = (): void => {
     setRecording(true);
     startTranscribing();
+    startAudioRecording();
   };
 
   const stopRecording = (): void => {
     setRecording(false);
     stopTranscribing();
-    audioChunks.forEach(x => {
-      getEmotions(x, recordingLength).then(emotions => {
-        const sortedEmotions = emotions.prosody.predictions[0].emotions.sort((a, b) => a.score - b.score);
-        console.log(emotions);
-        console.log(sortedEmotions);
-      });
-    });
+    stopAudioRecording();
   }
 
   return (
@@ -102,7 +109,6 @@ export const Game = () => {
       {sheeps.map((sheep, i) => {
         return <Sheep key={i} {...sheep} />;
       })}
-      <Recorder recording={recording} setAudioChunks={setAudioChunks} setRecordingLength={setRecordingLength}/>
     </div>
   );
 };

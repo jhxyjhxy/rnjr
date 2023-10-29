@@ -1,17 +1,21 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 
 export const useHume = () => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+  // const [socket, setSocket] = useState<WebSocket | null>(null);
+  const socketRef = useRef<WebSocket | null>();
 
-  const connectSocket = () => {
+  const connectSocket = (): Promise<void> => {
     const MAX_CONNECTION_TIME = 10000; // 10 secs;
 
     const apiKey = (window as any).API_KEY;    
     const socketUrl = `wss://api.hume.ai/v0/stream/models?apikey=${apiKey}`;
     const newSocket = new WebSocket(socketUrl);
-    setSocket(newSocket);
+    socketRef.current = newSocket;
     return new Promise((resolve, reject) => {
-      newSocket.onopen = resolve;
+      newSocket.onopen = () => {
+        console.log('socket opened?');
+        resolve();
+      };
       setTimeout(() => reject('max connection time'), MAX_CONNECTION_TIME);
     })
   };
@@ -41,22 +45,27 @@ export const useHume = () => {
       stream_window_ms: streamWindowLengthMs,
     });
 
-    if (!socket || socket.readyState !== WebSocket.OPEN)
+    if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
+      console.log('awaiting connection to socket');
       await connectSocket();
+    }
+    else {
+      console.log('skipped waiting for connection to socket');
+    }
 
     return new Promise((resolve, reject) => {
-      if (socket === null) {
+      if (!socketRef.current) {
         // this shouldn't happen?
-        return reject('socket was null');
+        return reject('no socket ref');
       }
 
-      socket.send(response);
+      socketRef.current.send(response);
 
-      socket.onmessage = (event: MessageEvent) => {
+      socketRef.current.onmessage = (event: MessageEvent) => {
         resolve(JSON.parse(event.data));
       };
 
-      socket.onerror = (error) => {
+      socketRef.current.onerror = (error) => {
         reject(error);
         console.log("hit error")
         // socket.close();

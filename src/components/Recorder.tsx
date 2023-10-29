@@ -1,19 +1,10 @@
 import { useEffect, useState } from "react";
 
-interface RecorderProps {
-  recording: boolean;
-  setAudioChunks: any;
-  setRecordingLength: any;
-}
-
-export const Recorder = (props: RecorderProps) => {
-  const {recording, setAudioChunks, setRecordingLength} = props;
-  
+export const useRecorder = (onNewAudio: Function) => {
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+  const [audioBlob, setAudioBlob] = useState<Blob>();
   const [recordingStartTime, setRecordingStartTime] = useState(0);
-
-//  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
 
   // initialization
   useEffect(() => {
@@ -26,7 +17,12 @@ export const Recorder = (props: RecorderProps) => {
 
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          setAudioChunks(prev => [...prev, event.data]);
+          setAudioBlob(event.data);
+          // const recordingLength = Date.now() - recordingStartTime;
+          setRecordingStartTime(prev => {
+            onNewAudio(event.data, prev);
+            return prev;
+          })
         }
       };
     };
@@ -34,61 +30,18 @@ export const Recorder = (props: RecorderProps) => {
     setup();
   }, []);
 
-  useEffect(() => {
-    console.log('toggled recorder')
-    if (recording)
-      startRecording();
-    else
-      stopRecording();
-  }, [recording])
-
-  const startRecording = () => {
+  const startAudioRecording = () => {
     if (!recorder || !mediaStream) return;
 
-    // setAudioChunks([]);
     recorder.start();
     setRecordingStartTime(Date.now());
-  }
+  };
 
-  const stopRecording = () => {
+  const stopAudioRecording = () => {
     if (!recorder || !mediaStream) return;
 
     recorder.stop();
-    setRecordingLength(Date.now() - recordingStartTime);
-  }
+  };
 
-  // const record = (length: number): Promise<Blob> => {
-  //   if (!recorder || !mediaStream) return Promise.reject('not ready');
-  //   if (recording) return Promise.reject('already recording');
-
-  //   return new Promise(async (resolve: (blob: Blob) => void, _) => {
-  //     recorder.ondataavailable = (blobEvent) => {
-  //       resolve(blobEvent.data);
-  //     };
-
-  //     if (recorder.state !== "recording") recorder.start();
-  //     setTimeout(() => {
-  //       if (recorder.state === "recording")
-  //         recorder.stop();
-  //     }, length);
-  //   });
-  // }
-
-  return (
-    <div>asdf</div>
-    // <div
-    // style={{backgroundColor: recording ? 'red' : 'gray'}}
-    // onClick={() => {
-    //   console.log(audioChunks);
-    //   setRecording(wasRecording => {
-    //     if (wasRecording)
-    //       stopRecording();
-    //     else
-    //       startRecording();
-    //     return !wasRecording;
-    //   });
-    // }}>
-    //   {recording ? 'Stop Recording' : 'Record'}
-    // </div>
-  )
+  return { audioBlob, startAudioRecording, stopAudioRecording };
 }
