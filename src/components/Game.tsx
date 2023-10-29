@@ -4,6 +4,7 @@ import SheepBlue from '../assets/sheep_blue.svg';
 import SheepRed from '../assets/sheep_red.svg';
 import { Sheep, SheepProps } from './Sheep';
 import '../styles/Game.css';
+import { Recorder } from './Recorder';
 
 export const Game = () => {
   // const vars
@@ -41,6 +42,7 @@ export const Game = () => {
     {sheeps.map((sheep, i) => {
       return <Sheep key={i} {...sheep} />
     })}
+    <Recorder />
   </div>
   )
 }
