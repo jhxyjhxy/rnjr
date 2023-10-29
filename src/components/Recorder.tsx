@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 
 interface RecorderProps {
   recording: boolean;
+  setAudioChunks: any;
+  setRecordingLength: any;
 }
 
 export const Recorder = (props: RecorderProps) => {
-  const {recording} = props;
-
+  const {recording, setAudioChunks, setRecordingLength} = props;
+  
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+  const [recordingStartTime, setRecordingStartTime] = useState(0);
 
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+//  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
 
   // initialization
   useEffect(() => {
@@ -37,7 +40,6 @@ export const Recorder = (props: RecorderProps) => {
       startRecording();
     else
       stopRecording();
-    console.log(audioChunks);
   }, [recording])
 
   const startRecording = () => {
@@ -45,12 +47,14 @@ export const Recorder = (props: RecorderProps) => {
 
     // setAudioChunks([]);
     recorder.start();
+    setRecordingStartTime(Date.now());
   }
 
   const stopRecording = () => {
     if (!recorder || !mediaStream) return;
 
     recorder.stop();
+    setRecordingLength(Date.now() - recordingStartTime);
   }
 
   // const record = (length: number): Promise<Blob> => {
