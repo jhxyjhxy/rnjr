@@ -1,11 +1,7 @@
-# rnjr
+# Sheepish
 
-## name ideas
-* Sheepish
-* Sheep Whisperer
-* Shepheard
-* Sheeprosody
-* possible subtitle: "The Vocal Herding Adventure"
+## Instructions
+Corral the sheep by saying the word attached to the sheep using the correct emotion. Try not to let them get past you!
 
 ## idea: *emotional voice galaga* web app
 * player is the shephard herding sheep
