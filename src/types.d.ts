@@ -1,1 +1,0 @@
-type Pos = [number, number]

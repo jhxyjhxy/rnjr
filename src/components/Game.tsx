@@ -6,6 +6,7 @@ import { Sheep, SheepProps } from './Sheep';
 import '../styles/Game.css';
 import { Recorder } from './Recorder';
 import { getEmotions, startSocket } from '../lib/api';
+import { useTranscript } from '../lib/useTranscript';
 
 export const Game = () => {
   // const vars
@@ -32,8 +33,31 @@ export const Game = () => {
     })
   }, []);
 
-  const stepGame = ():void => {
-    setSheeps(prev => prev.map(sheep => ({...sheep, progress: sheep.progress + 0.001})));
+  const {
+    transcription,
+    startTranscribing,
+    stopTranscribing,
+    resetTranscript,
+  } = useTranscript();
+  // const [recognition, setRecognition] = useState<any>(null);
+  // set up testing data
+  useEffect(() => {
+    setSheeps([
+      { asset: SheepWhite, progress: 0.5, y: 10 },
+      { asset: SheepBlue, progress: 0.2, y: 50 },
+      { asset: SheepRed, progress: 0.8, y: 90 },
+    ]);
+    startLoop();
+  }, []);
+
+  useEffect(() => {
+    console.log(transcription);
+  }, [transcription]);
+
+  const stepGame = (): void => {
+    setSheeps((prev) =>
+      prev.map((sheep) => ({ ...sheep, progress: sheep.progress + 0.001 }))
+    );
   };
 
   const startLoop = (): void => {
@@ -44,12 +68,18 @@ export const Game = () => {
   const stopLoop = (): void => {
     if (intervalId === null) return; // loop already stopped
     clearInterval(intervalId);
-  }
+  };
 
   const startRecording = (): void => {
-    // start recording
     setRecording(true);
-  }
+    startTranscribing();
+  };
+
+  const stopRecording = (): void => {
+    setRecording(false);
+    stopTranscribing();
+    sendAudioWithRetries(audioChunks, 0);
+  };
 
   const sendAudioWithRetries = (audioChunks: Blob[], numTriesSoFar: number) => {
     const MAX_RETRIES = 20;
@@ -68,29 +98,21 @@ export const Game = () => {
     });
   }
 
-  const stopRecording = (): void => {
-    setRecording(false);
-    sendAudioWithRetries(audioChunks, 0);
-    
-    }
-
   return (
-  <div className="game-screen">
-    <div
-      onClick={() => {
-        if (recording)
-          stopRecording();
-        else
-          startRecording();
-      }}
-      style={{backgroundColor: recording ? 'red' : 'gray'}}
-    >{
-      recording ? 'Stop Recording' : 'Record'}
+    <div className="game-screen">
+      <div
+        onClick={() => {
+          if (recording) stopRecording();
+          else startRecording();
+        }}
+        style={{ backgroundColor: recording ? "red" : "gray" }}
+      >
+        {recording ? "Stop Recording" : "Record"}
+      </div>
+      {sheeps.map((sheep, i) => {
+        return <Sheep key={i} {...sheep} />;
+      })}
+      <Recorder recording={recording} setAudioChunks={setAudioChunks} setRecordingLength={{setRecordingLength}}/>
     </div>
-    {sheeps.map((sheep, i) => {
-      return <Sheep key={i} {...sheep} />
-    })}
-    <Recorder recording={recording} setAudioChunks={setAudioChunks} setRecordingLength={setRecordingLength}/>
-  </div>
-  )
-}
+  );
+};
