@@ -35,7 +35,7 @@ export const Recorder = (props: RecorderProps) => {
   }, []);
 
   useEffect(() => {
-    console.log('hello?')
+    console.log('toggled recorder')
     if (recording)
       startRecording();
     else

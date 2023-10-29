@@ -5,8 +5,8 @@ import SheepRed from '../assets/sheep_red.svg';
 import { Sheep, SheepProps } from './Sheep';
 import '../styles/Game.css';
 import { Recorder } from './Recorder';
-import { getEmotions, startSocket } from '../lib/api';
 import { useTranscript } from '../lib/useTranscript';
+import { useHume } from '../lib/useHume';
 
 export const Game = () => {
   // const vars
@@ -15,9 +15,11 @@ export const Game = () => {
   const [intervalId, setIntervalId] = useState<any>(null); // if null, means game loop already running
   const [sheeps, setSheeps] = useState<SheepProps[]>([]);
   const [recording, setRecording] = useState<boolean>(false);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [recordingLength, setRecordingLength] = useState(0);
+
+
+  const getEmotions = useHume();
 
   // set up testing data
   useEffect(() => {
@@ -29,7 +31,6 @@ export const Game = () => {
         { asset: SheepRed, progress: 0.8, y: 90}
       ]);
       startLoop();
-      startSocket(setSocket);
     })
   }, []);
 
@@ -39,7 +40,7 @@ export const Game = () => {
     stopTranscribing,
     resetTranscript,
   } = useTranscript();
-  // const [recognition, setRecognition] = useState<any>(null);
+
   // set up testing data
   useEffect(() => {
     setSheeps([
@@ -78,23 +79,12 @@ export const Game = () => {
   const stopRecording = (): void => {
     setRecording(false);
     stopTranscribing();
-    sendAudioWithRetries(audioChunks, 0);
-  };
-
-  const sendAudioWithRetries = (audioChunks: Blob[], numTriesSoFar: number) => {
-    const MAX_RETRIES = 20;
-
-    if (!socket || socket.readyState !== WebSocket.OPEN) {
-      if (numTriesSoFar >= MAX_RETRIES) return;
-      setTimeout(() => {
-        sendAudioWithRetries(audioChunks, numTriesSoFar+1);
-      }, 100);
-    }
-
     audioChunks.forEach(x => {
-      getEmotions(socket as WebSocket, x, recordingLength).then((response) => {
-        console.log(response);
-      })
+      getEmotions(x, recordingLength).then(emotions => {
+        const sortedEmotions = emotions.prosody.predictions[0].emotions.sort((a, b) => a.score - b.score);
+        console.log(emotions);
+        console.log(sortedEmotions);
+      });
     });
   }
 
@@ -112,7 +102,7 @@ export const Game = () => {
       {sheeps.map((sheep, i) => {
         return <Sheep key={i} {...sheep} />;
       })}
-      <Recorder recording={recording} setAudioChunks={setAudioChunks} setRecordingLength={{setRecordingLength}}/>
+      <Recorder recording={recording} setAudioChunks={setAudioChunks} setRecordingLength={setRecordingLength}/>
     </div>
   );
 };
