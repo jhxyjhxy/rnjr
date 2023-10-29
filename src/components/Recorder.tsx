@@ -71,7 +71,7 @@ export const Recorder = (props: RecorderProps) => {
   // }
 
   return (
-    <div>asdf</div>
+    <div></div>
     // <div
     // style={{backgroundColor: recording ? 'red' : 'gray'}}
     // onClick={() => {

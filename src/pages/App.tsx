@@ -8,7 +8,9 @@ function App() {
   return (
     <>
       <div className="container">
-        <h1 style={{ marginTop: '3rem'}}>Sheep Game</h1>
+        
+        <img src = '/src/assets/header.svg' alt = "title" style={{ marginBottom: '20px' , marginTop: '20px'}}></img>
+        
         <Game />
       </div>
     </>

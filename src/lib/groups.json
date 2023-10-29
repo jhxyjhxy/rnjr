@@ -1,0 +1,5 @@
+{
+    "happy": ["Admiration", "Adoration", "Aesthetic Appreciation", "Amusement", "Awe", "Contentment", "Enthusiasm", "Excitement", "Surprise (positive)", "Satisfaction", "Joy", "Triumph"],
+    "sad": ["Pain", "Sadness", "Shame", "Empathic Pain"],
+    "angry": ["Anger", "Annoyance", "Disgust"]
+}

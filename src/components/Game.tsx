@@ -24,9 +24,9 @@ export const Game = () => {
   // set up testing data
   useEffect(() => {
     setSheeps([
-      { asset: SheepWhite, progress: 0.5, y: 10 },
-      { asset: SheepBlue, progress: 0.2, y: 50 },
-      { asset: SheepRed, progress: 0.8, y: 90 },
+      { asset: SheepWhite, progress: 0, y: 200},
+      { asset: SheepBlue, progress: -0.2, y: 300 },
+      { asset: SheepRed, progress: -0.8, y: 400 },
     ]);
     startLoop();
   }, []);
@@ -68,14 +68,18 @@ export const Game = () => {
           if (recording) stopRecording();
           else startRecording();
         }}
-        style={{ backgroundColor: recording ? "red" : "gray" }}
+        style={{ backgroundColor: recording ? "red" : "gray"}}
       >
         {recording ? "Stop Recording" : "Record"}
+      </div>
+      <div id = "dog">
+        <img src = "/src/assets/normal_dog.svg" style = {{marginTop: '230px', marginRight:'750px'}}></img>
       </div>
       {sheeps.map((sheep, i) => {
         return <Sheep key={i} {...sheep} />;
       })}
       <Recorder recording={recording} />
     </div>
+    
   );
 };
