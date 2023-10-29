@@ -1,12 +1,10 @@
 # rnjr
 
 ## name ideas
-* voicechamp
 * Sheepish
-* MoSheep
-* EmoSheep
-* Emotieep
 * Sheep Whisperer
+* Shepheard
+* Sheeprosody
 * possible subtitle: "The Vocal Herding Adventure"
 
 ## idea: *emotional voice galaga* web app
@@ -14,12 +12,6 @@
 * use different fonts and/or colors on the sheep for each emotion
 * entire phrases / sentences so hume can "hear" enough 
 * 3 lives
-
-## assets
-* sheep (the things with the phrase)
-* the shephard
-* animation: sheep bouncing, sheep walking, dog talking
-* [stretch] particle effects
 
 ## features
 * hume for [speech prosody](https://dev.hume.ai/docs/speech-prosody), determines what emotion the player is speaking with
