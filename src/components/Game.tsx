@@ -43,10 +43,10 @@ export const Game = () => {
       console.log(sortedEmotions);
       setSheeps(sheeps => {
         // score sheep
-        console.log(groups[sheeps[0].type]);
+        console.log(groups[sheeps[0]?.type]);
         console.log(sortedEmotions[sortedEmotions.length - 1].name);
         if (sortedEmotions.slice(sortedEmotions.length - 4, sortedEmotions.length).some(emotion => {
-          return groups[sheeps[0].type].includes(emotion.name);
+          return groups[sheeps[0]?.type].includes(emotion.name);
         })) {
           console.log('matches')
           console.log(transcriptionRef.current);
@@ -57,7 +57,7 @@ export const Game = () => {
             console.log('transcription matches too')
             setSheeps(prev => {
               setFinishedSheeps(prevFinished => {
-                return [...prevFinished, {...sheeps[0], y: -100}]
+                return [...prevFinished, {...sheeps[0], y: 500}]
               })
               return [...prev.slice(1)]
             })
@@ -229,6 +229,11 @@ export const Game = () => {
           {sheeps.map((sheep, i) => {
             return <Sheep key={i} {...sheep} />;
           })}
+          {
+            finishedSheeps.map((sheep, i) => {
+              return <Sheep key={i} {...sheep} />;
+            })
+          }
         </>
       )}
     </div>
