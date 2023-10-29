@@ -8,6 +8,16 @@ import { useRecorder } from './Recorder';
 import { useTranscript } from '../lib/useTranscript';
 import { useHume } from '../lib/useHume';
 
+// Create a new component for the menu
+const Menu = ({ onStart, onInstructions }) => (
+  <div className="menu">
+    <div className="buttons">
+      <button onClick={onStart}>Start</button>
+      <button onClick={onInstructions}>Instructions</button>
+    </div>  
+  </div>
+);
+
 export const Game = () => {
   // const vars
   const GAME_CLOCK_PERIOD = 100; // ms
@@ -15,6 +25,7 @@ export const Game = () => {
   const [intervalId, setIntervalId] = useState<any>(null); // if null, means game loop already running
   const [sheeps, setSheeps] = useState<SheepProps[]>([]);
   const [recording, setRecording] = useState<boolean>(false);
+  const [dogImage, setDogImage] = useState("../assets/normal_dog.svg");
   // const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   // const [recordingLength, setRecordingLength] = useState(0);
   
@@ -24,12 +35,24 @@ export const Game = () => {
     console.log('recording length', recordingLength);
     getEmotions(audioBlob, recordingLength).then(emotions => {
       console.log(emotions);
-      const sortedEmotions = emotions.prosody.predictions[0].emotions.sort((a, b) => a.score - b.score);
+      const sortedEmotions = (emotions as any).prosody.predictions[0].emotions.sort((a, b) => a.score - b.score);
       console.log(sortedEmotions);
     }).catch(error => console.log(error));
   };
 
   const { audioBlob, startAudioRecording, stopAudioRecording } = useRecorder(onNewAudio);
+
+  const [showMenu, setShowMenu] = useState(true);
+
+  //START BUTTON
+  const handleStart = () => {
+    setShowMenu(false); 
+  };
+
+  //INSTRUCTIONS
+  const handleInstructions = () => {
+    
+  };
 
 
 
@@ -38,9 +61,9 @@ export const Game = () => {
     fetch('/env.json').then(res => res.json()).then(data => {
       (window as any).API_KEY = data.REACT_APP_API_KEY;
       setSheeps([
-        { asset: SheepWhite, progress: 0.5, y: 10},
-        { asset: SheepBlue, progress: 0.2, y: 50},
-        { asset: SheepRed, progress: 0.8, y: 90}
+        { asset: SheepWhite, progress: 0.5, y: 200},
+        { asset: SheepBlue, progress: 0.2, y: 300},
+        { asset: SheepRed, progress: 0.8, y: 400}
       ]);
       startLoop();
     })
@@ -61,7 +84,25 @@ export const Game = () => {
       { asset: SheepRed, progress: -0.8, y: 400 },
     ]);
     startLoop();
-  }, []);
+
+    const dogImages = ["../assets/normal_dog.svg", "../assets/half_bark_dog.svg", "../assets/bark_dog.svg"];
+    let currentIndex = 0;
+    let temp = 1;
+
+    const intervalId = setInterval(() => {
+      if (recording) {
+        setDogImage(dogImages[currentIndex]);
+        currentIndex = (currentIndex + temp) % dogImages.length;
+        if (currentIndex == 2) temp = -1;
+        else if (currentIndex == 0) temp = 1;
+      }
+      else setDogImage(dogImages[currentIndex]);
+    }, 300); 
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [recording]);
 
   useEffect(() => {
     console.log(transcription);
@@ -93,25 +134,31 @@ export const Game = () => {
     setRecording(false);
     stopTranscribing();
     stopAudioRecording();
-  }
+  } 
 
   return (
     <div className="game-screen">
-      <div
-        onClick={() => {
-          if (recording) stopRecording();
-          else startRecording();
-        }}
-        style={{ backgroundColor: recording ? "red" : "gray"}}
-      >
-        {recording ? "Stop Recording" : "Record"}
-      </div>
-      <div id = "dog">
-        <img src = "/src/assets/normal_dog.svg" style = {{marginTop: '230px', marginRight:'750px'}}></img>
-      </div>
-      {sheeps.map((sheep, i) => {
-        return <Sheep key={i} {...sheep} />;
-      })}
+      {showMenu ? ( // Render the menu conditionally
+        <Menu onStart={handleStart} onInstructions={handleInstructions} />
+      ) : (
+        <>
+          <div
+            onClick={() => {
+              if (recording) stopRecording();
+              else startRecording();
+            }}
+            style={{ backgroundColor: recording ? "red" : "gray" }}
+          >
+            {recording ? "Stop Recording" : "Record"}
+          </div>
+          <div id="dog">
+            <img src={`/src/assets/${dogImage}`} style={{ top: '50%', left: 3, position: 'absolute' }} alt="Dog" />
+          </div>
+          {sheeps.map((sheep, i) => {
+            return <Sheep key={i} {...sheep} />;
+          })}
+        </>
+      )}
     </div>
     
   );
