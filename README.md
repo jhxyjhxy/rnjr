@@ -3,6 +3,12 @@
 ## Instructions
 Corral the sheep by saying the word attached to the sheep using the correct emotion. Try not to let them get past you!
 
+## To Run
+1. To install packages: `npm i`
+2. Add `env.json` into the public/ folder
+3. Inside, put `{ "REACT_APP_API_KEY": "INSERT API KEY HERE" }` for your Hume API key
+4. To run: `npm run dev`
+
 ## What we used
 * Hume AI's Streaming API
 * [Figma](https://www.figma.com/file/asSSTwPf4GYvF0mRqExL8Q/Untitled?type=design&node-id=1%3A3&mode=design&t=6BNs0l9W3MSOvZyq-1)
